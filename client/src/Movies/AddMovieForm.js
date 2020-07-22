@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import axios from 'axios'
+import { v4 as uuidv4 } from 'uuid'
 
 const initialMovie = {
+    id: uuidv4(),
     title: '',
     director:'',
     metascore:'',
@@ -10,16 +12,16 @@ const initialMovie = {
 }
 
 
-const UpdateForm = props => {
+const AddMovieForm = props => {
     const [movie, setMovie] = useState(initialMovie)
     const {push} = useHistory();
-    const {id} = useParams();
-
-    useEffect(() => {
-        axios.get(`http://localhost:5000/api/movies/${id}`)
-            .then(res => {setMovie(res.data)})
-            .catch(err => console.log(err))
-    }, [id])
+    // const {id} = useParams();
+    // const {setMovieList} = props
+    // useEffect(() => {
+    //     axios.get(`http://localhost:5000/api/movies/${id}`)
+    //         .then(res => {setMovie(res.data)})
+    //         .catch(err => console.log(err))
+    // }, [id])
 
 
 
@@ -30,20 +32,20 @@ const UpdateForm = props => {
         });
     }
 
-    const setItem = e => {
+    const addMovie = e => {
         e.preventDefault();
         axios
-            .put(`http://localhost:5000/api/movies/${id}`, movie)
+            .post(`http://localhost:5000/api/movies/`, movie)
             .then(res => {
                 console.log('API response', res.data)
-                push(`/movies/${id}`)
+                push(`/`)
             })
             .catch(err => console.log(err))
     };
 
         return(
-            <form className='form' onSubmit={setItem}>
-                <h4>Update Movie:</h4>
+            <form className='form' onSubmit={addMovie}>
+                <h4>Add Movie:</h4>
                 <label>
                     <input 
                         placeholder='Title'
@@ -72,10 +74,10 @@ const UpdateForm = props => {
                     />
                 </label>
 
-                <button>Update</button>
+                <button>Add</button>
             </form>
         )
 }
 
 
-export default UpdateForm;
+export default AddMovieForm;
